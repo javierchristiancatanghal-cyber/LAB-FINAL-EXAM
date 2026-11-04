@@ -5,16 +5,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#f6f8fb;--card:#fff;--ink:#14213d;--mute:#4f5b6e;--navy:#0b2545;--on:#fff;--line:#c9d2de;--tint:#eef2fb;
---ok:#1b6e35;--okb:#e2f3e8;--warn:#7a4f00;--warnb:#fff0d0;--bad:#9b2020;--badb:#fbe3e3;--bl:#1f4fa8;--blb:#e3ecfb}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1420;--card:#16202f;--ink:#eef2f8;--mute:#a9b4c6;--navy:#a9c8ff;--on:#0b2545;--line:#34445c;--tint:#1c2a40;--ok:#7fdc9d;--okb:#17301f;--warn:#ffd27a;--warnb:#3a2d0e;--bad:#ff9d9d;--badb:#3a1818;--bl:#a9c8ff;--blb:#1c2a40}}
-:root[data-theme="dark"]{--bg:#0d1420;--card:#16202f;--ink:#eef2f8;--mute:#a9b4c6;--navy:#a9c8ff;--on:#0b2545;--line:#34445c;--tint:#1c2a40;--ok:#7fdc9d;--okb:#17301f;--warn:#ffd27a;--warnb:#3a2d0e;--bad:#ff9d9d;--badb:#3a1818;--bl:#a9c8ff;--blb:#1c2a40}
+--bg:#f8fafc;--card:#fff;--ink:#17243b;--mute:#57657b;--navy:#0b2545;--on:#fff;--line:#cfd9e8;--soft:#e2e8f0;--tint:#f1f5fb;--sel:#f5f9ff;
+--ok:#2e7d32;--okb:#e8f5e9;--warn:#875b12;--warnb:#fff5df;--bad:#a33636;--badb:#fceeee;--bl:#1e56c8;--blb:#f1f5fb;
+--btn:#1e56c8;--btn-h:#1949ad;--btn-a:#0f2f73;--btn-d:#dbe3f0;--btn-dt:#737a87;--btn-t:#fff}
+:root{color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0d1420;--card:#16202f;--ink:#eef2f8;--mute:#a9b4c6;--navy:#a9c8ff;--on:#0b2545;--line:#34445c;--tint:#1c2a40;--soft:#25344d;--sel:#1c2a40;--ok:#7fdc9d;--okb:#17301f;--warn:#ffd27a;--warnb:#3a2d0e;--bad:#ff9d9d;--badb:#3a1818;--bl:#a9c8ff;--blb:#1c2a40;--btn:#1e56c8;--btn-h:#1949ad;--btn-a:#0f2f73;--btn-d:#25344d;--btn-dt:#7d8aa0;--btn-t:#fff}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0d1420;--card:#16202f;--ink:#eef2f8;--mute:#a9b4c6;--navy:#a9c8ff;--on:#0b2545;--line:#34445c;--tint:#1c2a40;--soft:#25344d;--sel:#1c2a40;--ok:#7fdc9d;--okb:#17301f;--warn:#ffd27a;--warnb:#3a2d0e;--bad:#ff9d9d;--badb:#3a1818;--bl:#a9c8ff;--blb:#1c2a40;--btn:#1e56c8;--btn-h:#1949ad;--btn-a:#0f2f73;--btn-d:#25344d;--btn-dt:#7d8aa0;--btn-t:#fff}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,"Segoe UI",Arial,sans-serif}
 header{background:var(--navy);color:var(--on);padding:14px 18px;display:flex;gap:12px;align-items:center}
 header b{background:var(--on);color:var(--navy);border-radius:8px;padding:8px 10px;font-size:15px}header small{opacity:.85}
 main{max-width:720px;margin:0 auto;padding:18px}h1{font-size:26px;line-height:1.2;margin:6px 0 10px}h2{font-size:18px;margin:0 0 10px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--soft);border-radius:12px;padding:16px;margin-bottom:14px}
 .mu{color:var(--mute);font-size:14px}.step{color:var(--mute);font-size:13px;font-weight:600;margin:0}
 label{display:block;font-weight:600;font-size:14px;margin-bottom:12px}
 input,select,textarea{display:block;width:100%;min-height:48px;margin-top:6px;padding:10px 12px;font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:10px}
@@ -23,15 +25,19 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{out
 .bad{border-color:var(--bad)!important}
 button{font:inherit;font-weight:600;min-height:48px;min-width:48px;padding:0 16px;border-radius:10px;border:1.5px solid var(--navy);background:var(--card);color:var(--ink);cursor:pointer}
 button:active{transform:translateY(1px)}.w{width:100%;margin-bottom:10px}
-.pri{background:var(--navy);color:var(--on);width:100%;margin-bottom:10px}.dng{border-color:var(--bad);color:var(--bad)}
+.pri{width:100%;margin-bottom:10px}
+.pri,.chips button[aria-pressed=true]{background:var(--btn);border-color:var(--btn);color:var(--btn-t)}
+@media(hover:hover){button.pri:hover:not(:disabled),.chips button[aria-pressed=true]:hover:not(:disabled){background:var(--btn-h);border-color:var(--btn-h)}}
+button.pri:active:not(:disabled),.chips button[aria-pressed=true]:active:not(:disabled){background:var(--btn-a);border-color:var(--btn-a)}
+button:disabled,button.pri:disabled{background:var(--btn-d);border-color:var(--btn-d);color:var(--btn-dt);cursor:not-allowed;transform:none}.dng{border-color:var(--bad);color:var(--bad)}
 .back{display:inline-flex;align-items:center;min-height:48px;font-weight:600;cursor:pointer}
 .chk{display:flex;align-items:center;gap:12px;min-height:48px;cursor:pointer}.chk input{width:28px;height:28px;min-height:28px;margin:0;flex:none}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:15px}.kv span{color:var(--mute);font-size:13px;display:block}.kv .f{grid-column:1/-1}
-.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600;background:var(--blb);color:var(--bl)}
-.Available,.Returned,.Approved{background:var(--okb);color:var(--ok)}.Pending,.Awaiting,.Return{background:var(--warnb);color:var(--warn)}.Maintenance,.Rejected{background:var(--badb);color:var(--bad)}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.tile b{font-size:28px;display:block;line-height:1.1}.tile span{font-size:13px;color:var(--mute)}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.chips button[aria-pressed=true]{background:var(--navy);color:var(--on)}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600;background:var(--tint);color:var(--navy)}
+.Available,.Returned{background:var(--okb);color:var(--ok)}.Approved{background:var(--tint);color:var(--navy)}.Pending,.Awaiting,.Return{background:var(--warnb);color:var(--warn)}.Maintenance,.Rejected{background:var(--badb);color:var(--bad)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.tile{background:var(--card);border:1px solid var(--soft);border-radius:12px;padding:12px}.tile b{font-size:28px;display:block;line-height:1.1}.tile span{font-size:13px;color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .err{background:var(--badb);color:var(--bad);border-radius:10px;padding:12px;margin-bottom:12px;font-weight:600}
 .note{background:var(--tint);border-radius:10px;padding:12px;font-size:14px;margin-bottom:12px}
 .nav{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;margin-bottom:10px}
@@ -119,7 +125,7 @@ b3:()=>{const e=eqOf(B.eq);return `${back("b2","Equipment selection")}<p class="
 <div class="card"><h2>Equipment Information</h2>${kv([["Equipment ID",e.id],["Equipment Name",esc(e.name)],["Equipment Type",e.type],["Status (at request)",e.state],["Condition (at request)",e.cond],["Accessories",esc(e.acc.join(", "))]])}</div>
 <div class="card"><h2>Borrowing Schedule</h2>${kv([["Borrow Date",fd(B.from)],["Return Date",fd(B.to)]])}</div>
 <div class="card"><h2>Condition &amp; Return Status</h2>${kv([["Condition Before (at checkout)",esc(e.note),1],["Condition After (at return)","Not yet returned",1]])}</div>
-<label class="chk"><input id="cf" type="checkbox"> I confirm the condition and accessories</label><div id="err"></div><button class="w" data-a="go" data-v="b1">Edit</button><button class="pri" data-a="n3">Submit for Approval</button>`},
+<label class="chk"><input id="cf" type="checkbox"> I confirm the condition and accessories</label><div id="err"></div><button class="w" data-a="go" data-v="b1">Edit</button><button class="pri" id="sb" data-a="n3" disabled>Submit for Approval</button>`},
 slip:()=>{const t=txOf(UI.cur),e=eqOf(t.eq);return `<p class="step">Request submitted</p><h1>Borrowing Slip</h1><p class="mu">Keep this slip. Your request is pending staff approval.</p>
 <div class="card">${kv([["Transaction ID",t.id],["Request Status",tag(t.status)],["Borrow Date",fd(t.from)],["Expected Return Date",fd(t.to)],["Actual Return Date","Not yet returned"]])}</div>
 <div class="card"><h2>Borrower Information</h2>${kv([["Borrower ID",esc(t.bid)],["Name",esc(t.name)],["Contact Number",esc(t.phone)],["Email",esc(t.email)],["Role",t.role]])}</div>
@@ -260,6 +266,7 @@ function readRep(){const c=UI.rep;if(!$("#pt"))return;Object.assign(c,{ty:$("#pt
 document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset.v,b)});
 document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("a[data-a]")){e.preventDefault();e.target.click()}});
 document.addEventListener("change",e=>{const i=e.target.id;
+if(i==="cf"){const ok=e.target.checked;$("#sb").disabled=!ok;if(ok){clr();const m=$("#err");if(m)m.innerHTML=""}}
 if(i==="eq"){const q=eqOf(e.target.value);$("#eqd").innerHTML=q?eqCard(q):""}
 if(i==="q"){UI.q=e.target.value;render()}if(i==="rr"){UI.role=e.target.value;render()}if(i==="iq"){UI.iq=e.target.value;UI.lim=5;render()}if(i==="it"){UI.it=e.target.value;UI.lim=5;render()}});
 (async()=>{try{const r=await fetch("/api/state");if(r.ok){const d=await r.json();API=true;if(d.eq&&d.eq.length)S=d;save()}}catch(e){}render()})();
