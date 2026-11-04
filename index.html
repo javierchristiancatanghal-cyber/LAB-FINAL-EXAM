@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>BSU Equipment Borrowing System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f8fb;--card:#fff;--ink:#14213d;--mute:#4f5b6e;--navy:#0b2545;--on:#fff;--line:#c9d2de;--tint:#eef2fb;
+--ok:#1b6e35;--okb:#e2f3e8;--warn:#7a4f00;--warnb:#fff0d0;--bad:#9b2020;--badb:#fbe3e3;--bl:#1f4fa8;--blb:#e3ecfb}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1420;--card:#16202f;--ink:#eef2f8;--mute:#a9b4c6;--navy:#a9c8ff;--on:#0b2545;--line:#34445c;--tint:#1c2a40;--ok:#7fdc9d;--okb:#17301f;--warn:#ffd27a;--warnb:#3a2d0e;--bad:#ff9d9d;--badb:#3a1818;--bl:#a9c8ff;--blb:#1c2a40}}
+:root[data-theme="dark"]{--bg:#0d1420;--card:#16202f;--ink:#eef2f8;--mute:#a9b4c6;--navy:#a9c8ff;--on:#0b2545;--line:#34445c;--tint:#1c2a40;--ok:#7fdc9d;--okb:#17301f;--warn:#ffd27a;--warnb:#3a2d0e;--bad:#ff9d9d;--badb:#3a1818;--bl:#a9c8ff;--blb:#1c2a40}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,"Segoe UI",Arial,sans-serif}
+header{background:var(--navy);color:var(--on);padding:14px 18px;display:flex;gap:12px;align-items:center}
+header b{background:var(--on);color:var(--navy);border-radius:8px;padding:8px 10px;font-size:15px}header small{opacity:.85}
+main{max-width:720px;margin:0 auto;padding:18px}h1{font-size:26px;line-height:1.2;margin:6px 0 10px}h2{font-size:18px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.mu{color:var(--mute);font-size:14px}.step{color:var(--mute);font-size:13px;font-weight:600;margin:0}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:12px}
+input,select,textarea{display:block;width:100%;min-height:48px;margin-top:6px;padding:10px 12px;font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:10px}
+textarea{min-height:88px}input:disabled,select:disabled{background:var(--tint);color:var(--mute)}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+.bad{border-color:var(--bad)!important}
+button{font:inherit;font-weight:600;min-height:48px;min-width:48px;padding:0 16px;border-radius:10px;border:1.5px solid var(--navy);background:var(--card);color:var(--ink);cursor:pointer}
+button:active{transform:translateY(1px)}.w{width:100%;margin-bottom:10px}
+.pri{background:var(--navy);color:var(--on);width:100%;margin-bottom:10px}.dng{border-color:var(--bad);color:var(--bad)}
+.back{display:inline-flex;align-items:center;min-height:48px;font-weight:600;cursor:pointer}
+.chk{display:flex;align-items:center;gap:12px;min-height:48px;cursor:pointer}.chk input{width:28px;height:28px;min-height:28px;margin:0;flex:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:15px}.kv span{color:var(--mute);font-size:13px;display:block}.kv .f{grid-column:1/-1}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600;background:var(--blb);color:var(--bl)}
+.Available,.Returned,.Approved{background:var(--okb);color:var(--ok)}.Pending,.Awaiting,.Return{background:var(--warnb);color:var(--warn)}.Maintenance,.Rejected{background:var(--badb);color:var(--bad)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.tile b{font-size:28px;display:block;line-height:1.1}.tile span{font-size:13px;color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.chips button[aria-pressed=true]{background:var(--navy);color:var(--on)}
+.err{background:var(--badb);color:var(--bad);border-radius:10px;padding:12px;margin-bottom:12px;font-weight:600}
+.note{background:var(--tint);border-radius:10px;padding:12px;font-size:14px;margin-bottom:12px}
+.nav{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;margin-bottom:10px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.acts{display:flex;gap:10px;margin-top:10px}.acts button{flex:1}
+.bar{height:10px;background:var(--tint);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--navy)}
+.qr{width:120px;height:120px;margin:8px auto;border:2px dashed var(--line);border-radius:10px;display:grid;place-items:center;color:var(--mute);font-weight:700;text-align:center}
+.tl{border-left:3px solid var(--line);padding-left:12px;margin:0}.tl p{margin:0 0 10px}
+.ov{position:fixed;inset:0;background:rgba(5,10,20,.6);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.md{background:var(--card);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:16px 16px 0 0;padding:20px}
+@media(min-width:600px){.ov{align-items:center;padding:16px}.md{border-radius:16px}}
+@media print{header,.noprint{display:none}}
+</style></head><body>
+<div id="app"></div><div id="modal"></div>
+<script>
+const $=s=>document.querySelector(s),K="bsu-ebs-v2";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const OK="Good — tested and working; no visible damage.",TYPES=["Laptop","Projector","Camera","Microphone","Speaker","Other"],CONDS=["Good","Fair","Needs repair"];
+const E=(id,name,type,state,acc,cond="Good",note=OK)=>({id,name,type,cond,state,acc,note,hist:[]});
+const T=(id,bid,name,phone,email,role,eq,from,to,status,x={})=>({id,bid,name,phone,email,role,eq,from,to,status,hist:[],...x});
+const seed=()=>({n:153,cfg:[],eq:[
+E("EQ-PRJ-001","Epson EB-X49 Projector","Projector","Available",["Power cable","HDMI cable","Remote control"]),
+E("EQ-LAP-004","Dell Latitude 5420","Laptop","Available",["Charger","Carry sleeve"]),
+E("EQ-SPK-003","JBL EON610 Speaker","Speaker","On loan",["Power cable"]),
+E("EQ-PRJ-005","BenQ MS550 Projector","Projector","Maintenance",["Power cable"],"Needs repair","Lamp flickers; service inspection scheduled."),
+E("EQ-CAM-002","Canon EOS 1500D Camera","Camera","Available",["Battery","Charger","Camera bag"]),
+E("EQ-MIC-006","Shure SM58 Microphone","Microphone","Available",["XLR cable"]),
+E("EQ-LAP-001","Lenovo ThinkPad E14","Laptop","Available",["Charger","Carry sleeve"]),
+E("EQ-LAP-002","HP ProBook 450","Laptop","Available",["Charger"]),
+E("EQ-CAM-003","Nikon D3500 Camera","Camera","Available",["Battery","Charger"]),
+E("EQ-PRJ-002","Epson EB-X06 Projector","Projector","Available",["Power cable","HDMI cable"]),
+E("EQ-MIC-007","Rode NT-USB Microphone","Microphone","Available",["USB cable"]),
+E("EQ-SPK-004","Yamaha DBR10 Speaker","Speaker","Available",["Power cable"])],
+tx:[T("BSU-2026-00147","2024-01872","Andrea Santos","0917 482 6310","andrea.santos@bulsu.edu.ph","Student","EQ-SPK-003","2026-10-14","2026-10-17","Approved",{hist:[["14 Oct 2026, 8:00 AM","Request submitted · Pending"],["14 Oct 2026, 8:45 AM","Approved & checked out · On loan"]]}),
+T("BSU-2026-00151","F-2018-0042","Carlos Mendoza","0918 523 7401","carlos.mendoza@bulsu.edu.ph","Faculty","EQ-LAP-004","2026-10-16","2026-10-17","Pending",{hist:[["16 Oct 2026, 8:10 AM","Request submitted · Pending"]]}),
+T("BSU-2026-00152","2025-02116","Mia Reyes","0912 000 1122","mia.reyes@bulsu.edu.ph","Student","EQ-CAM-002","2026-10-17","2026-10-18","Pending",{hist:[["16 Oct 2026, 8:20 AM","Request submitted · Pending"]]}),
+T("BSU-2026-00153","2024-01903","Luis Garcia","0915 300 4488","luis.garcia@bulsu.edu.ph","Student","EQ-MIC-006","2026-10-17","2026-10-17","Pending",{hist:[["16 Oct 2026, 8:30 AM","Request submitted · Pending"]]}),
+T("BSU-2026-00136","2024-01872","Andrea Santos","0917 482 6310","andrea.santos@bulsu.edu.ph","Student","EQ-CAM-002","2026-10-07","2026-10-09","Returned",{handover:"2026-10-09",after:"Good",notes:"No new damage.",final:"Good — no new damage; all accessories returned.",by:"Maria Dela Cruz",hist:[["07 Oct 2026, 9:00 AM","Request submitted · Pending"],["09 Oct 2026, 10:00 AM","Staff verified · Returned / Available"]]}),
+T("BSU-2026-00139","2025-02116","Mia Reyes","0912 000 1122","mia.reyes@bulsu.edu.ph","Student","EQ-CAM-003","2026-10-10","2026-10-10","Returned",{handover:"2026-10-10",after:"Good",notes:"OK.",final:"Good — complete.",by:"Maria Dela Cruz",hist:[]}),
+T("BSU-2026-00142","F-2018-0042","Carlos Mendoza","0918 523 7401","carlos.mendoza@bulsu.edu.ph","Faculty","EQ-LAP-004","2026-10-11","2026-10-12","Returned",{handover:"2026-10-12",after:"Good",notes:"OK.",final:"Good — complete.",by:"Maria Dela Cruz",hist:[]}),
+T("BSU-2026-00144","2024-01903","Luis Garcia","0915 300 4488","luis.garcia@bulsu.edu.ph","Student","EQ-PRJ-002","2026-10-12","2026-10-13","Rejected",{reason:"Equipment reserved for a campus event.",hist:[]})],
+log:[{t:"System",who:"System",act:"Database initialised with 12 equipment records"}]});
+let S,API=false;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S||!S.eq)S=seed();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}if(API)fetch("/api/state",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)}).catch(()=>{})};
+const now=()=>new Date().toLocaleString("en-GB",{day:"2-digit",month:"short",year:"numeric",hour:"numeric",minute:"2-digit"});
+const today=()=>new Date().toISOString().slice(0,10),fd=d=>d?new Date(d+"T00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"—";
+const log=(who,act)=>S.log.unshift({t:now(),who,act});
+const eqOf=id=>S.eq.find(e=>e.id===id),txOf=id=>S.tx.find(t=>t.id===id),ADMIN="Maria Dela Cruz";
+const tag=s=>`<span class="tag ${s.split(" ")[0]}">${esc(s)}</span>`;
+const kv=a=>`<div class="kv">${a.map(([k,v,f])=>`<div class="${f?"f":""}"><span>${k}</span><b>${v}</b></div>`).join("")}</div>`;
+const back=(v,l)=>`<a class="back" tabindex="0" role="button" data-a="go" data-v="${v}">← ${l}</a>`;
+const lt=(t,s)=>{t.hist.push([now(),s])};
+let V="home",ADM=false,B={},R={},D={},UI={cur:"",q:"",tab:"Pending",role:"All",iq:"",is:"All",it:"All",lim:5,my:"",mt:"Pending",open:"",rep:null,rv:null,all:false};
+function modal(h){$("#modal").innerHTML=h?`<div class="ov" role="dialog" aria-modal="true"><div class="md">${h}</div></div>`:""}
+const msg=(t,m,k)=>modal(`<h2>${t}</h2>${k?`<div class="err">${m}</div>`:`<p>${m}</p>`}<button class="pri" data-a="close">OK</button>`);
+function render(){if(V[0]==="a"&&V!=="alogin"&&!ADM)V="alogin";
+$("#app").innerHTML=`<header><b>BSU</b><div><strong>Bulacan State University</strong><br><small>${V[0]==="a"?"Lab administrator service":"Equipment borrowing service"}</small></div></header><main>${VW[V]()}</main>`}
+const go=(v,x)=>{V=v;if(x)Object.assign(UI,x);render();scrollTo(0,0)};
+const val=id=>($(id)?.value||"").trim();
+const bad=(ids,m)=>{ids.forEach(i=>document.querySelectorAll(i).forEach(x=>x.classList.add("bad")));const e=$("#err");if(e)e.innerHTML=`<div class="err" role="alert">${m}</div>`;$(ids[0])?.focus();return false};
+const fld=(id,l,v,x="")=>`<label>${l}<input id="${id}" value="${esc(v)}" ${x}></label>`;
+const sel=(id,l,opts,v,x="")=>`<label>${l}<select id="${id}" ${x}>${opts.map(o=>`<option ${o===v?"selected":""}>${o}</option>`).join("")}</select></label>`;
+const eqCard=(e,x="")=>`<div class="card"><h2>${esc(e.name)} ${tag(e.state)}</h2>${kv([["Equipment ID",e.id],["Type",e.type],["Condition",e.cond],["Inventory state",e.state],["Accessories",esc(e.acc.join(", ")),1],["Condition before",esc(e.note),1]])}${x}</div>`;
+const tcard=t=>`<div class="card">${tag(t.status)}<h2 style="margin-top:8px">${esc(eqOf(t.eq).name)}</h2>${kv([["Transaction ID",t.id],["Borrower",esc(t.name)+" · "+t.role],["Borrow → Return",fd(t.from)+" → "+fd(t.to)]])}</div>`;
+const rec=t=>{const e=eqOf(t.eq);return `<div class="card"><h2>Borrower Information</h2>${kv([["Name",esc(t.name)],["Borrower ID",esc(t.bid)],["Role",t.role],["Contact number",esc(t.phone)],["Email",esc(t.email),1]])}</div>
+<div class="card"><h2>Equipment Details</h2>${kv([["Equipment ID",e.id],["Name",esc(e.name)],["Type",e.type],["Condition",e.cond],["Inventory state",tag(e.state)],["Accessories",esc(e.acc.join(", "))]])}</div>
+<div class="card"><h2>Borrowing Schedule</h2>${kv([["Borrow date",fd(t.from)],["Expected return",fd(t.to)],["Actual return",t.handover?fd(t.handover):"Not yet returned"]])}</div>
+<div class="card"><h2>Preserved condition notes</h2>${kv([["Before · Recorded at checkout",esc(e.note),1],["Borrower-reported after",t.notes?esc(t.after+" — "+t.notes):"Not yet recorded",1],["Final after · Staff inspected",t.final?esc(t.final):"Not yet recorded",1]])}${t.by?`<p class="mu">Inspected by ${esc(t.by)}</p>`:""}${t.reason?`<div class="note"><b>Rejection reason:</b> ${esc(t.reason)}</div>`:""}</div>
+<div class="card"><h2>Transaction lifecycle</h2><div class="tl">${t.hist.map(h=>`<p class="mu">${esc(h[0])}<br><b style="color:var(--ink)">${esc(h[1])}</b></p>`).join("")||'<p class="mu">No history recorded.</p>'}</div></div>`};
+const VW={
+home:()=>`<h1>Equipment Borrowing System</h1><p>Request campus equipment for your classes and university activities in three simple steps.</p>
+<div class="card"><h2>How borrowing works</h2><ol><li><b>Enter your information</b> — use your student or faculty ID.</li><li><b>Choose your equipment</b> — select your borrow and return dates.</li><li><b>Review and submit</b> — keep your slip for staff verification.</li></ol></div>
+<p class="mu">For Bulacan State University students and faculty. Requests are subject to staff approval.</p>
+<button class="pri" data-a="start">Borrow Equipment</button><button class="pri" data-a="go" data-v="r1">Return Equipment</button><button class="pri" data-a="go" data-v="my">My Transactions</button>
+<p class="mu" style="text-align:center">OR</p><div class="card"><h2>Lab Administrator login</h2><p class="mu">Access the admin dashboard to review requests, manage inventory, and approve returns.</p><label class="chk"><input id="isadm" type="checkbox"> I am a lab administrator</label><div id="err"></div><button class="pri" data-a="adm">Admin Login</button></div>`,
+b1:()=>`${back("home","Borrower home")}<p class="step">Step 1 of 3 · Borrower</p><h1>Borrower Information</h1><p class="mu">Enter your university details to begin your equipment request.</p>
+${fld("bid","University Borrower ID",B.bid||"",'placeholder="2024-01872" autocomplete="off"')}${fld("nm","Full Name",B.name||"")}${fld("ph","Contact Phone",B.phone||"",'inputmode="tel"')}${fld("em","Contact Email",B.email||"",'type="email"')}
+<b>Role</b><div class="row"><label class="chk card"><input type="radio" name="rl" value="Student" ${B.role!=="Faculty"?"checked":""}> Student</label><label class="chk card"><input type="radio" name="rl" value="Faculty" ${B.role==="Faculty"?"checked":""}> Faculty</label></div>
+<p class="mu">Your details will be used to verify and manage this borrowing request.</p><div id="err"></div><button class="pri" data-a="n1">Next</button>`,
+b2:()=>{const av=S.eq.filter(e=>e.state==="Available"),e=eqOf(B.eq);return `${back("b1","Borrower information")}<p class="step">Step 2 of 3 · Equipment</p><h1>Equipment Selection</h1><p class="mu">Review equipment details, confirm availability, and set borrowing dates before proceeding.</p>
+<label>Equipment<select id="eq"><option value="">Select available equipment</option>${av.map(x=>`<option value="${x.id}" ${x.id===B.eq?"selected":""}>${esc(x.name)} (${x.id})</option>`).join("")}</select></label><div id="eqd">${e&&e.state==="Available"?eqCard(e):""}</div>
+<div class="row"><label>Borrow Date<input id="d1" type="date" value="${B.from||today()}"></label><label>Expected Return Date<input id="d2" type="date" value="${B.to||today()}"></label></div><div id="err"></div><button class="pri" data-a="n2">Next</button>`},
+b3:()=>{const e=eqOf(B.eq);return `${back("b2","Equipment selection")}<p class="step">Step 3 of 3 · Review</p><h1>Borrowing Review</h1><p class="mu">Check your request before submitting it for staff approval.</p>
+<div class="card"><h2>Borrower Information</h2>${kv([["Borrower Name",esc(B.name)],["Borrower ID",esc(B.bid)],["Role",B.role],["Contact Number",esc(B.phone)],["Email Address",esc(B.email),1]])}</div>
+<div class="card"><h2>Equipment Information</h2>${kv([["Equipment ID",e.id],["Equipment Name",esc(e.name)],["Equipment Type",e.type],["Status (at request)",e.state],["Condition (at request)",e.cond],["Accessories",esc(e.acc.join(", "))]])}</div>
+<div class="card"><h2>Borrowing Schedule</h2>${kv([["Borrow Date",fd(B.from)],["Return Date",fd(B.to)]])}</div>
+<div class="card"><h2>Condition &amp; Return Status</h2>${kv([["Condition Before (at checkout)",esc(e.note),1],["Condition After (at return)","Not yet returned",1]])}</div>
+<label class="chk"><input id="cf" type="checkbox"> I confirm the condition and accessories</label><div id="err"></div><button class="w" data-a="go" data-v="b1">Edit</button><button class="pri" data-a="n3">Submit for Approval</button>`},
+slip:()=>{const t=txOf(UI.cur),e=eqOf(t.eq);return `<p class="step">Request submitted</p><h1>Borrowing Slip</h1><p class="mu">Keep this slip. Your request is pending staff approval.</p>
+<div class="card">${kv([["Transaction ID",t.id],["Request Status",tag(t.status)],["Borrow Date",fd(t.from)],["Expected Return Date",fd(t.to)],["Actual Return Date","Not yet returned"]])}</div>
+<div class="card"><h2>Borrower Information</h2>${kv([["Borrower ID",esc(t.bid)],["Name",esc(t.name)],["Contact Number",esc(t.phone)],["Email",esc(t.email)],["Role",t.role]])}</div>
+<div class="card"><h2>Equipment Details</h2>${kv([["Equipment ID",e.id],["Name",esc(e.name)],["Type",e.type],["Equipment Status",tag(e.state)],["Condition Before",esc(e.note),1],["Condition After","Not yet recorded",1]])}<b>Accessories</b>${e.acc.map(a=>`<label class="chk"><input type="checkbox" disabled> ${esc(a)}</label>`).join("")}</div>
+<div class="qr">QR<br><small>PLACEHOLDER</small></div><p class="mu" style="text-align:center">Not scannable · Demo only</p><button class="pri" data-a="go" data-v="home">Back to Home</button><button class="pri" data-a="mine">My Transactions</button>`},
+r1:()=>{const L=S.tx.filter(t=>t.bid===R.bid&&t.status==="Approved"),t=txOf(R.sel),e=t&&eqOf(t.eq);return `${back("home","Borrower home")}<p class="step">Return · Step 1 of 2</p><h1>Return Equipment</h1><p class="mu">Choose an active loan to begin your return.</p>
+<div class="card">${fld("rb","University Borrower ID",R.bid||"",'placeholder="2024-01872"')}<button class="w" data-a="find">Find my active loans</button>${R.bid&&L[0]?`<b>${esc(L[0].name)} · ${L[0].role}</b>`:""}</div>
+<div class="note"><b>Active approved loans only</b><br>Pending, rejected and completed requests cannot be selected for return.</div>
+${R.bid?`<h2>Your active loans · ${L.length}</h2>${L.map(x=>`<button class="nav" role="checkbox" aria-checked="${R.sel===x.id}" data-a="pick" data-v="${x.id}" style="${R.sel===x.id?"border-width:3px":""}"><span>${R.sel===x.id?"☑":"☐"} ${esc(eqOf(x.eq).name)}<br><small>${x.id} · Borrow ${fd(x.from)} · Due ${fd(x.to)}</small></span>${tag("Approved")}</button>`).join("")||'<div class="note">No active approved loans for this ID.</div>'}`:""}
+${e?`${eqCard(e)}<div class="card"><h2>Recorded condition before borrowing</h2><p>${esc(e.note)}</p></div>`:""}<div id="err"></div><button class="pri" data-a="n4">Continue</button><p class="mu">Next: report the return condition and confirm accessories.</p>`},
+r2:()=>{const t=txOf(R.sel),e=eqOf(t.eq);return `${back("r1","Select active transaction")}<p class="step">Return · Step 2 of 2</p><h1>Return Condition &amp; Confirmation</h1><p class="mu">Tell us how the equipment is being returned.</p>
+<div class="card"><h2>Selected transaction</h2>${kv([["Transaction ID",t.id],["Equipment",esc(e.name)+" · "+e.id],["Status","Approved · On loan"],["Borrow / Expected Return",fd(t.from)+" / "+fd(t.to)]])}</div>
+<div class="card"><h2>Condition before · Read only</h2><p>${esc(e.note)}</p><p class="mu">Recorded at checkout. This original note cannot be edited.</p></div>
+<div class="card"><h2>Borrower-reported condition after</h2>${sel("rc","Equipment condition *",CONDS,"Good")}<label>Return condition notes *<textarea id="rn"></textarea></label><label>Actual handover date *<input id="rd" type="date" value="${today()}"></label><p class="mu">Date the equipment is handed to laboratory staff.</p></div>
+<div class="card"><h2>Returned accessories</h2>${e.acc.map(a=>`<label class="chk"><input class="ac" type="checkbox" value="${esc(a)}"> ${esc(a)}</label>`).join("")}</div>
+<label class="chk"><input id="rcf" type="checkbox"> I confirm these details truthfully describe the equipment and accessories handed to staff.</label>
+<div class="note"><b>Staff inspection is required</b><br>Submitting records your report, not a final Returned status. Equipment stays unavailable until staff verify and close the return.</div><div id="err"></div><button class="pri" data-a="n5">Submit Return</button><button class="w" data-a="go" data-v="r1">Back</button>`},
+rcpt:()=>{const t=txOf(UI.cur),e=eqOf(t.eq);return `<p class="step">Return receipt · Awaiting review</p><h1>Return Submitted</h1><p class="mu">Your return report is recorded. Keep this receipt for staff verification.</p>
+<div class="card"><h2>Return receipt</h2>${kv([["Transaction ID",t.id],["Status",tag("Return submitted")],["Submitted",esc(t.hist[t.hist.length-1][0])],["Actual handover date",fd(t.handover)],["Borrower",esc(t.name)+" · "+t.role+" · "+esc(t.bid),1],["Equipment",esc(e.name)+" · "+e.id,1],["Borrow / Expected Return",fd(t.from)+" / "+fd(t.to),1]])}</div>
+<div class="card"><h2>Condition record</h2>${kv([["Recorded before · Preserved",esc(e.note),1],["Borrower-reported after",esc(t.after+" — "+t.notes),1],["Final staff inspection","Not yet recorded",1]])}</div>
+<div class="card"><h2>Accessories reported returned</h2>${(t.got||[]).map(a=>`<p style="margin:4px 0">✓ ${esc(a)}</p>`).join("")||"<p>None reported.</p>"}<p class="mu">Staff verification pending.</p></div>
+<div class="card"><h2>Inventory state</h2>${tag("Awaiting inspection")}<p class="mu">Unavailable for new borrowing until staff completes inspection.</p></div>
+<div class="note"><b>What happens next</b><ol><li>Staff checks the equipment and accessories.</li><li>Final condition notes are recorded.</li><li>Your transaction becomes Returned. Stock is Available only if cleared for use.</li></ol></div>
+<button class="pri" data-a="mine">My Transactions</button><button class="w" data-a="go" data-v="home">Back to Home</button>`},
+my:()=>{const all=S.tx.filter(t=>t.bid===UI.my),m={Pending:["Pending"],Approved:["Approved","Return submitted"],Returned:["Returned"],Rejected:["Rejected"]},L=all.filter(t=>m[UI.mt].includes(t.status));
+return `${back("home","Borrower home")}<p class="step">Borrower · History</p><h1>My Transactions</h1>${fld("mb","University Borrower ID",UI.my,'placeholder="2024-01872"')}<button class="w" data-a="findmy">Show my transactions</button>
+${UI.my?`<p class="mu">${esc(all[0]?all[0].name+" · "+all[0].role+" · ":"")}${esc(UI.my)}</p><div class="chips">${Object.keys(m).map(k=>`<button aria-pressed="${UI.mt===k}" data-a="mt" data-v="${k}">${k}</button>`).join("")}</div>
+<p class="mu">${UI.mt} · ${L.length} transaction${L.length===1?"":"s"}</p>${L.map(t=>`<button class="nav" data-a="open" data-v="${t.id}"><span>${esc(eqOf(t.eq).name)}<br><small>${t.id} · ${fd(t.from)}</small></span>${tag(t.status)}</button>${UI.open===t.id?rec(t):""}`).join("")||'<div class="note">No transactions in this tab.</div>'}`:""}<button class="pri" data-a="go" data-v="home">Back to Home</button>`},
+alogin:()=>`${back("home","Return to Borrower Service")}<p class="step">Restricted access</p><h1>Admin Login</h1><p class="mu">Sign in to manage laboratory equipment and borrowing requests.</p>
+<div class="card"><h2>Lab Administrator</h2>${fld("ae","Administrator email or ID *","m.delacruz@bulsu.edu.ph")}${fld("ap","Password *","",'type="password" autocomplete="off"')}<p class="mu">Password is hidden for your security.</p><div id="err"></div><button class="pri" data-a="login">Sign in</button></div>
+<div class="note"><b>Authorized university staff only</b><br>Student and faculty borrower details do not provide administrative access. Demo password: admin123</div>`,
+adash:()=>{const c=s=>S.tx.filter(t=>t.status===s).length,ec=s=>S.eq.filter(e=>e.state===s).length,rs=S.tx.filter(t=>t.status==="Return submitted"),pd=S.tx.filter(t=>t.status==="Pending");
+return `<p class="step">Overview · ${fd(today())}</p><h1>Lab Administrator Dashboard</h1><p class="mu">Review requests, inspect returns and keep stock ready for campus use.</p><div class="card"><b>${ADMIN}</b><br><span class="mu">Lab Administrator · Main Campus</span></div>
+<div class="tiles"><div class="tile"><b>${pd.length}</b><span>Pending requests</span></div><div class="tile"><b>${c("Approved")}</b><span>Active loans</span></div><div class="tile"><b>${ec("Available")}</b><span>Available equipment</span></div><div class="tile"><b>${ec("Maintenance")}</b><span>In maintenance</span></div></div>
+<div class="card"><h2>${rs.length} returns awaiting inspection</h2><p class="mu">Inspect equipment before closing transactions or releasing stock.</p><button class="pri" data-a="go" data-v="areq" data-x="Return submitted">Review Returns</button></div>
+<p class="mu">${S.eq.length} inventory items: ${ec("Available")} available, ${ec("On loan")} on loan, ${ec("Awaiting inspection")} awaiting inspection, ${ec("Maintenance")} maintenance.</p>
+<button class="nav" data-a="go" data-v="areq"><span><b>Requests</b><br><small>${pd.length} pending · Approve, reject or review</small></span>›</button><button class="nav" data-a="go" data-v="ainv"><span><b>Inventory</b><br><small>Monitor stock · Add and edit equipment</small></span>›</button><button class="nav" data-a="go" data-v="arep"><span><b>Reports</b><br><small>Usage and transaction summaries</small></span>›</button><button class="nav" data-a="go" data-v="aaud"><span><b>Audit log</b><br><small>Every admin and borrower action</small></span>›</button>
+<h2 style="margin-top:14px">Needs your attention</h2>${rs[0]?`<div class="card"><b>Return inspection</b> ${tag("Return submitted")}<p>${esc(rs[0].name)} · ${rs[0].id}<br><span class="mu">${rs[0].eq} · ${esc(eqOf(rs[0].eq).name)}</span></p><button class="w" data-a="det" data-v="${rs[0].id}">Inspect Return</button></div>`:""}${pd[0]?`<div class="card"><b>Pending request</b> ${tag("Pending")}<p>${esc(pd[0].name)} · ${pd[0].role}<br><span class="mu">${pd[0].id} · ${pd[0].eq}</span></p><button class="w" data-a="det" data-v="${pd[0].id}">Review Request</button></div>`:""}${!rs[0]&&!pd[0]?'<div class="note">Nothing needs attention.</div>':""}
+<p class="mu">Last updated · ${now()}</p><button class="w" data-a="logout">Sign out</button>`},
+areq:()=>{const q=UI.q.toLowerCase(),c=s=>S.tx.filter(t=>t.status===s).length,rs=S.tx.filter(t=>t.status==="Return submitted"),
+m={Pending:["Pending"],Approved:["Approved"],Returned:["Returned"],Rejected:["Rejected"],"Return submitted":["Return submitted"]},
+L=S.tx.filter(t=>m[UI.tab].includes(t.status)&&(UI.role==="All"||t.role===UI.role)&&(!q||(t.id+t.name+t.bid+eqOf(t.eq).name).toLowerCase().includes(q)));
+return `${back("adash","Dashboard")}<p class="step">Lab administrator · Requests</p><h1>Request Management</h1><p class="mu">Review borrower records and requested schedules before deciding.</p>${fld("q","Search requests",UI.q,'placeholder="Search ID, name or equipment"')}
+<div class="chips">${["Pending","Approved","Returned","Rejected"].map(k=>`<button aria-pressed="${UI.tab===k}" data-a="rtab" data-v="${k}">${k} ${c(k)}</button>`).join("")}<button aria-pressed="${UI.tab==="Return submitted"}" data-a="rtab" data-v="Return submitted">Return submitted ${rs.length}</button></div>
+${sel("rr","Borrower role",["All","Student","Faculty"],UI.role)}
+${rs.length?`<div class="note"><b>Returns requiring review · ${rs.length}</b><br>${rs.map(t=>esc(t.name)+" · "+t.id+" · "+esc(eqOf(t.eq).name)+" · Awaiting inspection").join("<br>")}<br><a class="back" role="button" tabindex="0" data-a="rtab" data-v="Return submitted">Open return inspection →</a></div>`:""}
+<h2>${UI.tab} · ${L.length}</h2>${L.map(t=>`<div class="card">${tag(t.status)}<h2 style="margin-top:8px">${esc(t.name)} · ${t.role}</h2>${kv([["Borrower ID",esc(t.bid)],["Transaction ID",t.id],["Equipment",t.eq+" · "+esc(eqOf(t.eq).name)+" · "+eqOf(t.eq).type],["Borrow → Expected Return",fd(t.from)+" → "+fd(t.to)]])}<button class="w" style="margin-top:10px" data-a="det" data-v="${t.id}">View full record →</button>${t.status==="Pending"?`<div class="acts"><button class="pri" style="margin:0" data-a="appr" data-v="${t.id}">Approve</button><button class="dng" data-a="det" data-v="${t.id}">Reject</button></div>`:""}${t.status==="Return submitted"?`<button class="pri" data-a="det" data-v="${t.id}">Inspect Return</button>`:""}</div>`).join("")||'<div class="note">No requests match.</div>'}
+<p class="mu">Reject opens the reason field in request detail. Approval applies only to pending requests; return inspection is a separate review.</p><button class="w" data-a="go" data-v="adash">Back to Dashboard</button>`},
+adet:()=>{const t=txOf(UI.cur),e=eqOf(t.eq),bi=`<div class="card"><h2>Borrower Information</h2>${kv([["Name",esc(t.name)],["Borrower ID / Role",esc(t.bid)+" · "+t.role],["Contact Number",esc(t.phone)],["Email",esc(t.email)]])}</div>`;
+const eqc=`<div class="card"><h2>${t.status==="Pending"?"Requested equipment":"Equipment Details"}</h2>${kv([["Equipment ID / Name",e.id+" · "+esc(e.name)],["Type / Condition",e.type+" · "+e.cond],["Inventory state",tag(e.state)],["Accessories",esc(e.acc.join(", "))],["Before · Recorded inspection",esc(e.note),1],["Borrow / Expected Return",fd(t.from)+" / "+fd(t.to)],["Actual Return / Final After",(t.handover?fd(t.handover):"Not yet returned")+" / "+(t.final?esc(t.final):"Not yet recorded")]])}</div>`;
+let p="";
+if(t.status==="Pending")p=`<div class="card"><h2>A · Request decision</h2><label>Rejection reason<textarea id="rj" placeholder="Enter reason if rejecting this request"></textarea></label><p class="mu">Required for Reject. Saved with the transaction for the borrower to review.</p><div id="err"></div><div class="acts"><button class="pri" style="margin:0" data-a="appr" data-v="${t.id}">Approve</button><button class="dng" data-a="rejc" data-v="${t.id}">Reject</button></div><p class="mu">Approve → Approved. Reject → Rejected with reason. Confirm equipment availability before checkout.</p></div>`;
+else if(t.status==="Return submitted")p=`<div class="card"><h2>B · Return inspection</h2>${kv([["Current transaction status",tag("Return submitted")],["Current inventory state",tag(e.state)]])}</div>
+<div class="card"><h2>Compare return condition</h2>${kv([["Before · Original checkout record",esc(e.note),1],["After · Borrower-reported, not final",esc(t.after+" — "+t.notes),1]])}<p class="mu">Borrower notes remain preserved alongside staff findings.</p></div>
+<div class="card"><h2>Staff inspection · Unsaved review</h2>${sel("fc","Final inspected condition *",CONDS,"Good")}<label>Final condition notes *<textarea id="fn">${esc(t.after+" — "+t.notes)}</textarea></label><p class="mu">Inspecting administrator: ${ADMIN} · Lab Administrator</p></div>
+<div class="card"><h2>Accessories verified by staff</h2>${e.acc.map(a=>`<label class="chk"><input class="av" type="checkbox"> ${esc(a)}</label>`).join("")}</div>
+<div class="card"><h2>Close transaction</h2>${sel("oc","Inventory outcome after inspection *",["Available","Maintenance"],"Available")}<p class="mu">Use Maintenance if equipment is damaged. This outcome applies only after you mark the inspected return.</p><label class="chk"><input id="pc" type="checkbox"> I have physically inspected the equipment and verified all returned accessories.</label><div id="err"></div><button class="pri" data-a="mark" data-v="${t.id}">Mark Returned</button><p class="mu">Saves final notes, closes this transaction as Returned and updates inventory to the inspected outcome.</p></div>
+<div class="note"><b>Stock stays unavailable until verified</b><br>A borrower submission alone cannot close a transaction or make equipment Available.</div>`;
+else p=`<div class="note">This transaction is ${t.status}. No decision is needed.${t.reason?"<br><b>Reason:</b> "+esc(t.reason):""}</div>`;
+return `${back("areq","Request Management")}<p class="step">Lab administrator · Detail</p><h1>Request &amp; Return Management</h1><div class="card"><h2>${t.id}</h2>${tag(t.status)}</div>${bi}${eqc}${p}<div class="card"><h2>Transaction lifecycle</h2><div class="tl">${t.hist.map(h=>`<p class="mu">${esc(h[0])}<br><b style="color:var(--ink)">${esc(h[1])}</b></p>`).join("")}</div></div><button class="w" data-a="go" data-v="areq">Back to Requests</button>`},
+ainv:()=>{const q=UI.iq.toLowerCase(),c=s=>S.eq.filter(e=>e.state===s).length,L=S.eq.filter(e=>(UI.is==="All"||e.state===UI.is)&&(UI.it==="All"||e.type===UI.it)&&(!q||(e.id+e.name+e.type).toLowerCase().includes(q))),sh=L.slice(0,UI.lim),why={"On loan":"Unavailable · On loan","Awaiting inspection":"Unavailable · Return review required",Maintenance:"Unavailable · Under repair",Available:"Available for borrowing"};
+return `${back("adash","Dashboard")}<p class="step">Lab administrator · Inventory</p><h1>Equipment Inventory &amp; Status Monitor</h1><p class="mu">Monitor physical stock, condition and borrowing availability.</p><button class="pri" data-a="adde">Add New Equipment</button>
+${fld("iq","Search inventory",UI.iq,'placeholder="Search equipment ID, name or type"')}<div class="chips">${[["All",S.eq.length],["Available",c("Available")],["On loan",c("On loan")],["Awaiting inspection",c("Awaiting inspection")],["Maintenance",c("Maintenance")]].map(([k,n])=>`<button aria-pressed="${UI.is===k}" data-a="is" data-v="${k}">${k} ${n}</button>`).join("")}</div>
+${sel("it","Equipment type",["All",...TYPES],UI.it)}<p class="mu">Last updated: ${now()}</p><button class="w" data-a="refresh">Refresh list</button>
+<div class="note"><b>Inventory state ≠ transaction status</b><br>On loan and Awaiting inspection are unavailable stock. Returned describes a completed transaction; Available describes equipment cleared for borrowing.</div>
+<p class="mu">Showing ${sh.length} of ${L.length} items · Select an item to edit</p>${sh.map(e=>`<div class="card"><h2>${esc(e.name)}</h2><p class="mu">${e.id}</p>${kv([["Type",e.type],["Condition",e.cond]])}<p>${tag(e.state)}</p><b>${why[e.state]}</b><p class="mu">${esc(e.acc.join(", "))}</p><button class="w" data-a="edit" data-v="${e.id}">View / Edit Equipment</button></div>`).join("")}
+${sh.length<L.length?'<button class="w" data-a="more">Load more equipment</button>':""}<button class="w" data-a="go" data-v="adash">Back to Dashboard</button>`},
+aedit:()=>{const e=eqOf(UI.cur),t=S.tx.find(x=>x.eq===e.id&&["Approved","Return submitted"].includes(x.status)),lock=!!t;
+return `${back("ainv","Inventory")}<p class="step">Lab administrator · ${e.id}</p><h1>Equipment Details &amp; Edit</h1><p class="mu">Update the condition record without overriding an outstanding loan or return.</p>
+<div class="card"><h2>Inventory record</h2>${kv([["Equipment ID",e.id],["Name",esc(e.name)],["Type",e.type],["Accessories",esc(e.acc.join(", "))]])}</div>
+${t?`<div class="card"><h2>Outstanding transaction</h2>${kv([["Transaction / Borrower",t.id+" · "+esc(t.name)],["Status",tag(t.status)]])}${t.status==="Return submitted"?`<button class="w" style="margin-top:10px" data-a="det" data-v="${t.id}">Open Return Inspection</button>`:""}</div>`:""}
+<div class="card"><h2>Edit condition and status</h2>${sel("ec","Current condition *",CONDS,e.cond)}<label>Condition notes *<textarea id="en">${esc(e.note)}</textarea></label>${sel("es","Inventory status *",lock?[e.state]:["Available","Maintenance"],e.state,lock?"disabled":"")}${lock?`<p class="mu">🔒 Locked by ${t.id}. Available cannot be selected until staff completes return inspection.</p>`:""}<b>Borrowing availability</b><p>${e.state==="Available"?"Available":"Unavailable"}</p><p class="mu">For unlinked equipment, status may be set to Available or Maintenance. Active loans and inspection states follow their transaction.</p></div>
+<div class="note"><b>Preserve the checkout record</b><br>Inventory edits do not replace the original before notes or close the outstanding transaction. Record final after notes in Return Inspection.</div>
+<div class="card"><h2>Equipment history</h2><div class="tl">${S.tx.filter(x=>x.eq===e.id).flatMap(x=>x.hist.map(h=>[h[0],h[1]+" · "+x.id+" · "+x.name])).concat(e.hist).map(h=>`<p class="mu">${esc(h[0])}<br><b style="color:var(--ink)">${esc(h[1])}</b></p>`).join("")||'<p class="mu">No history yet.</p>'}</div><p class="mu">Condition before borrowing: ${esc(e.note)}</p></div>
+<div id="err"></div><button class="pri" data-a="savech" data-v="${e.id}">Save Changes</button><button class="w" data-a="go" data-v="ainv">Cancel</button>`},
+aadd:()=>`${back("ainv","Inventory")}<p class="step">Lab administrator · New inventory</p><h1>Add Equipment</h1><p class="mu">Create a complete equipment record before making it available to borrowers. * Required fields</p>
+<div class="card"><h2>Equipment Information</h2>${fld("ni","Equipment ID *",D.id||"",'placeholder="EQ-LAP-012"')}<p class="mu">Use a unique inventory ID.</p>${fld("nn","Equipment name *",D.name||"")}${sel("nt","Equipment type *",TYPES,D.type||"Laptop")}${sel("nc","Initial condition *",CONDS,D.cond||"Good")}${sel("ns","Initial inventory status *",["Available","Maintenance"],D.state||"Available")}<p class="mu">New equipment can be Available or Maintenance; On loan requires a checkout transaction.</p><label>Initial condition notes *<textarea id="no">${esc(D.note||OK)}</textarea></label></div>
+<div class="card"><h2>Accessories</h2><p class="mu">List every item included at checkout.</p>${D.acc.map((a,i)=>`<div class="row" style="grid-template-columns:1fr 48px"><label>Accessory<input class="ai" value="${esc(a)}"></label><button aria-label="Remove accessory ${i+1}" data-a="delacc" data-v="${i}" style="margin-top:26px">🗑</button></div>`).join("")}<button class="w" data-a="addacc">+ Add accessory</button></div>
+<div class="note"><b>Ready for borrower selection</b><br>Saving as Available makes this new equipment eligible for future requests. No borrowing transaction is created by adding inventory.</div><div id="err"></div><button class="pri" data-a="savee">Save Equipment</button><button class="w" data-a="go" data-v="ainv">Cancel</button>`,
+arep:()=>{const c=UI.rep||(UI.rep={ty:"Usage & transaction summary",s:"2026-10-01",e:today()>"2026-10-31"?today():"2026-10-31",st:"All",et:"All",ro:"All"});
+return `${back("adash","Dashboard")}<p class="step">Lab administrator · Reports</p><h1>System Reports</h1><p class="mu">Choose a period and filters to review equipment usage and transaction outcomes.</p>
+<div class="card"><h2>Report configuration</h2>${sel("pt","Report type *",["Usage & transaction summary","Equipment usage report","Transaction report"],c.ty)}<label>Start date *<input id="ps" type="date" value="${c.s}"></label><label>End date *<input id="pe" type="date" value="${c.e}"></label>${sel("pst","Transaction status",["All","Pending","Approved","Return submitted","Returned","Rejected"],c.st)}${sel("pet","Equipment type",["All",...TYPES],c.et)}<b>Borrower role</b><div class="chips">${["All","Student","Faculty"].map(k=>`<button aria-pressed="${c.ro===k}" data-a="prole" data-v="${k}">${k==="All"?"All roles":k}</button>`).join("")}</div><div id="err"></div><button class="pri" data-a="gen">Generate Report</button></div>
+<div class="note"><b>How the summary is counted</b><br>Transactions are grouped by borrow date within the selected period. Usage counts checked-out loans, not pending or rejected requests.</div>
+<h2>Recent report configurations</h2>${S.cfg.map((x,i)=>`<div class="card"><b>${esc(x.ty)}</b><p class="mu">${fd(x.s)} – ${fd(x.e)} · ${x.st==="All"?"All statuses":x.st} · ${x.et==="All"?"All equipment":x.et} · ${x.ro==="All"?"All roles":x.ro}</p><button class="w" data-a="viewcfg" data-v="${i}">View Summary</button></div>`).join("")||'<div class="note">No reports generated yet.</div>'}<button class="w" data-a="go" data-v="adash">Back to Dashboard</button>`},
+arepv:()=>{const c=UI.rv,L=S.tx.filter(t=>t.from>=c.s&&t.from<=c.e&&(c.st==="All"||t.status===c.st)&&(c.et==="All"||eqOf(t.eq).type===c.et)&&(c.ro==="All"||t.role===c.ro)),out=L.filter(t=>["Approved","Return submitted","Returned"].includes(t.status)),n=s=>L.filter(t=>t.status===s).length,pc=(a,b)=>b?(a/b*100).toFixed(1)+"%":"0%",
+by=k=>{const m={};out.forEach(t=>{const g=k(t);m[g]=(m[g]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])},types=by(t=>eqOf(t.eq).type),roles=by(t=>t.role),us=c.ty!=="Transaction report",tr=c.ty!=="Equipment usage report",active=n("Approved")+n("Return submitted");
+return `<div class="noprint">${back("arep","Report filters")}</div><p class="step">Lab administrator · Report preview</p><h1>Generated Summary Report</h1><p class="mu">Equipment usage and transaction outcomes for the selected period. Calculated live from the database.</p>
+<div class="card"><h2>${esc(c.ty)}</h2>${kv([["Selected period · Inclusive",fd(c.s)+" – "+fd(c.e),1],["Filters",(c.st==="All"?"All statuses":c.st)+" · "+(c.et==="All"?"All equipment types":c.et)+" · "+(c.ro==="All"?"Student and Faculty":c.ro),1]])}</div>
+<div class="tiles"><div class="tile"><b>${L.length}</b><span>Total transactions</span></div><div class="tile"><b>${out.length}</b><span>Checked-out loans</span></div><div class="tile"><b>${n("Returned")}</b><span>Returned</span></div><div class="tile"><b>${active}</b><span>Active approved loans</span></div></div>
+${tr?`<div class="card"><h2>Transaction status breakdown</h2>${["Pending","Approved","Return submitted","Returned","Rejected"].map(s=>`<p style="display:flex;justify-content:space-between;margin:6px 0">${tag(s)}<b>${n(s)}</b></p>`).join("")}<p><b>Total: ${L.length} transactions</b></p></div>`:""}
+${us?`<div class="card"><h2>Equipment usage by type</h2><p class="mu">${out.length} checked-out loans = ${n("Returned")} returned + ${active} active. Pending and rejected requests excluded.</p>${types.map(([k,v])=>`<p style="display:flex;justify-content:space-between;margin:8px 0 2px"><span>${k}</span><b>${v} loans · ${pc(v,out.length)}</b></p><div class="bar"><i style="width:${out.length?v/out.length*100:0}%"></i></div>`).join("")||'<p class="mu">No loans in this period.</p>'}</div>
+<div class="card"><h2>Usage by borrower role</h2>${["Student","Faculty"].map(r=>`<p>${r}<br><b>${(roles.find(x=>x[0]===r)||[0,0])[1]} checked-out loans</b></p>`).join("")}</div>`:""}
+<div class="note"><b>Key takeaways</b><br>${types[0]?`• ${types[0][0]}s lead demand: ${types[0][1]} of ${out.length} loans.<br>`:""}• ${n("Returned")} of ${out.length} checked-out loans are returned.<br>• Review ${n("Pending")} pending requests; ${active} approved loans remain active.</div>
+${tr?`<h2>Transaction details</h2><p class="mu">Showing ${UI.all?L.length:Math.min(3,L.length)} of ${L.length} transactions in this period</p>${(UI.all?L:L.slice(0,3)).map(t=>`<div class="card">${tag(t.status)}<p><b>${t.id}</b><br>${esc(t.name)} · ${t.role}<br><span class="mu">${t.eq} · ${esc(eqOf(t.eq).name)}</span></p>${kv([["Borrow → Due",fd(t.from)+" → "+fd(t.to)],["Actual Return",t.handover?fd(t.handover):"Not yet returned"]])}</div>`).join("")}<button class="w noprint" data-a="allrows">${UI.all?"Show fewer rows":"View all transaction rows"}</button>`:""}
+<div class="acts noprint"><button class="pri" style="margin:0" data-a="pdf">Export PDF</button><button data-a="share">Share</button></div><button class="w noprint" style="margin-top:10px" data-a="go" data-v="arep">Return to Filters</button>`},
+aaud:()=>`${back("adash","Dashboard")}<p class="step">Lab administrator · Audit trail</p><h1>Audit Log</h1><p class="mu">${S.log.length} recorded actions, newest first.</p><div class="card tw"><table><tr><th>Time</th><th>Actor</th><th>Action</th></tr>${S.log.map(l=>`<tr><td>${esc(l.t)}</td><td>${esc(l.who)}</td><td style="white-space:normal;min-width:220px">${esc(l.act)}</td></tr>`).join("")}</table></div><button class="w" data-a="go" data-v="adash">Back to Dashboard</button>`};
+const ID_RE=/^(\d{4}-\d{5}|F-\d{4}-\d{4})$/;
+const clr=()=>document.querySelectorAll(".bad").forEach(x=>x.classList.remove("bad"));
+const approve=id=>{const t=txOf(id),e=eqOf(t.eq);if(e.state!=="Available")return msg("Cannot approve",`${esc(e.name)} is ${e.state}. Reject this request or wait until it is available.`,1);
+t.status="Approved";e.state="On loan";lt(t,"Approved & checked out · On loan");log(ADMIN,`Approved ${t.id}; ${e.id} is On loan`);save();render();msg("Request approved",`${t.id} is approved. ${esc(e.name)} is now On loan.`)};
+const syncD=()=>{D={id:val("#ni"),name:val("#nn"),type:$("#nt").value,cond:$("#nc").value,state:$("#ns").value,note:$("#no").value,acc:[...document.querySelectorAll(".ai")].map(x=>x.value)}};
+const A={
+close:()=>modal(""),go:(v,el)=>{if(el&&el.dataset.x)UI.tab=el.dataset.x;go(v)},
+start:()=>{B={};go("b1")},logout:()=>{ADM=false;go("home")},
+adm:()=>{if(!$("#isadm").checked)return bad(["#isadm"],"Tick “I am a lab administrator” to continue.");go("alogin")},
+login:()=>{if(val("#ae")==="m.delacruz@bulsu.edu.ph"&&$("#ap").value==="admin123"){ADM=true;log(ADMIN,"Signed in");save();go("adash")}else bad(["#ap"],"Incorrect email or password. Check your administrator credentials.")},
+n1:()=>{clr();const b=val("#bid"),n=val("#nm"),p=val("#ph"),m=val("#em");
+if(!ID_RE.test(b))return bad(["#bid"],"Enter a valid Borrower ID, for example 2024-01872 or F-2018-0042.");if(n.length<3)return bad(["#nm"],"Enter your full name.");
+if(!/^[0-9 +]{10,16}$/.test(p))return bad(["#ph"],"Enter a valid phone number.");if(!/^\S+@\S+\.\S+$/.test(m))return bad(["#em"],"Enter a valid email address.");
+Object.assign(B,{bid:b,name:n,phone:p,email:m,role:document.querySelector("[name=rl]:checked").value});go("b2")},
+n2:()=>{clr();const q=$("#eq").value,d1=$("#d1").value,d2=$("#d2").value;
+if(!S.eq.some(e=>e.state==="Available"))return msg("No equipment available","All equipment is currently on loan, awaiting inspection or under maintenance. Please try again later.",1);
+if(!q)return bad(["#eq"],"Select the equipment you want to borrow.");if(eqOf(q).state!=="Available")return msg("Equipment unavailable","This equipment was just taken. Please choose another item.",1);
+if(!d1||!d2||d1<today()||d2<d1)return bad(["#d2"],"Borrow date cannot be in the past and return date must be on or after it.");Object.assign(B,{eq:q,from:d1,to:d2});go("b3")},
+n3:()=>{if(!$("#cf").checked)return bad(["#cf"],"Confirm the condition and accessories to continue.");const e=eqOf(B.eq);if(e.state!=="Available"){go("b2");return msg("Equipment unavailable","This equipment is no longer available. Please choose another item.",1)}
+const t=T("BSU-2026-"+String(++S.n).padStart(5,"0"),B.bid,B.name,B.phone,B.email,B.role,B.eq,B.from,B.to,"Pending");lt(t,"Request submitted · Pending");S.tx.push(t);log(t.name,`Submitted request ${t.id} for ${t.eq}`);save();UI.cur=t.id;UI.my=t.bid;go("slip")},
+mine:()=>go("my"),findmy:()=>{UI.my=val("#mb");UI.open="";render()},mt:v=>{UI.mt=v;UI.open="";render()},open:v=>{UI.open=UI.open===v?"":v;render()},
+find:()=>{R={bid:val("#rb"),sel:""};render()},pick:v=>{R.sel=R.sel===v?"":v;render()},
+n4:()=>{if(!R.sel)return bad(["#rb"],"Choose an active approved loan first. Enter your Borrower ID and tap Find my active loans.");go("r2")},
+n5:()=>{clr();const t=txOf(R.sel),e=eqOf(t.eq),n=val("#rn");if(n.length<5)return bad(["#rn"],"Describe the equipment condition on return.");if(!$("#rd").value)return bad(["#rd"],"Enter the handover date.");if(!$("#rcf").checked)return bad(["#rcf"],"Confirm your report is truthful before submitting.");
+Object.assign(t,{status:"Return submitted",after:$("#rc").value,notes:n,handover:$("#rd").value,got:[...document.querySelectorAll(".ac:checked")].map(x=>x.value)});e.state="Awaiting inspection";lt(t,"Return submitted · Awaiting inspection");log(t.name,`Submitted return for ${t.id}; ${e.id} awaiting inspection`);save();UI.cur=t.id;UI.my=t.bid;R={};go("rcpt")},
+rtab:v=>{UI.tab=v;render()},det:v=>go("adet",{cur:v}),appr:approve,
+rejc:v=>{const r=val("#rj");if(r.length<3)return bad(["#rj"],"A reason is required to reject a request.");const t=txOf(v);t.status="Rejected";t.reason=r;lt(t,"Rejected · "+r);log(ADMIN,`Rejected ${v}: ${r}`);save();go("areq",{tab:"Rejected"});msg("Request rejected","The reason is saved and visible to the borrower.")},
+mark:v=>{clr();const t=txOf(v),e=eqOf(t.eq),n=val("#fn"),all=[...document.querySelectorAll(".av")].every(x=>x.checked),oc=$("#oc").value;if(n.length<3)return bad(["#fn"],"Enter final condition notes.");
+if(!all&&oc==="Available")return bad([".av"],"Verify every accessory, or set the inventory outcome to Maintenance.");if(!$("#pc").checked)return bad(["#pc"],"Confirm the physical inspection.");
+t.status="Returned";t.final=$("#fc").value+" — "+n;t.by=ADMIN;e.cond=$("#fc").value;e.state=oc;if(oc==="Maintenance")e.note=n;lt(t,"Staff verified · Returned / "+oc);log(ADMIN,`Closed ${v} as Returned; ${e.id} set to ${oc}`);save();go("areq",{tab:"Returned"});msg("Return closed",`${v} is Returned. ${esc(e.name)} is now ${oc}.`)},
+is:v=>{UI.is=v;UI.lim=5;render()},more:()=>{UI.lim+=5;render()},refresh:()=>{render();msg("Inventory refreshed","The list shows the latest saved data.")},
+edit:v=>go("aedit",{cur:v}),
+savech:v=>{const e=eqOf(v),n=val("#en");if(n.length<3)return bad(["#en"],"Condition notes are required.");e.cond=$("#ec").value;e.note=n;if(!$("#es").disabled)e.state=$("#es").value;e.hist.push([now(),"Edited · "+e.cond+" · "+e.state]);log(ADMIN,`Edited ${v}: ${e.cond}, ${e.state}`);save();go("ainv");msg("Changes saved",`${esc(e.name)} was updated.`)},
+adde:()=>{D={acc:[""]};go("aadd")},addacc:()=>{syncD();D.acc.push("");render()},delacc:v=>{syncD();D.acc.splice(+v,1);if(!D.acc.length)D.acc=[""];render()},
+savee:()=>{clr();syncD();const i=D.id.toUpperCase();if(!/^EQ-[A-Z]{3}-\d{3}$/.test(i))return bad(["#ni"],"Use the format EQ-XXX-000.");if(eqOf(i))return bad(["#ni"],"That Equipment ID already exists.");if(!D.name)return bad(["#nn"],"Equipment name is required.");if(D.note.length<3)return bad(["#no"],"Condition notes are required.");
+const e=E(i,D.name,D.type,D.state,D.acc.map(x=>x.trim()).filter(Boolean),D.cond,D.note);e.hist.push([now(),"Added to inventory · "+D.state]);S.eq.push(e);log(ADMIN,"Added equipment "+i);save();go("ainv");msg("Equipment saved",`${esc(e.name)} was added as ${e.state}.`)},
+prole:v=>{UI.rep.ro=v;readRep();render()},
+gen:()=>{readRep();const c=UI.rep;if(!c.s||!c.e||c.e<c.s)return bad(["#pe"],"End date must be on or after the start date.");UI.rv={...c};S.cfg.unshift({...c});S.cfg=S.cfg.slice(0,3);save();UI.all=false;go("arepv")},
+viewcfg:v=>{UI.rv={...S.cfg[+v]};UI.all=false;go("arepv")},allrows:()=>{UI.all=!UI.all;render()},pdf:()=>window.print(),
+share:()=>{const t=document.querySelector("main").innerText.slice(0,1500);if(navigator.share)navigator.share({title:"Equipment report",text:t}).catch(()=>{});else{try{navigator.clipboard.writeText(t);msg("Report copied","The summary text is on your clipboard.")}catch(e){msg("Share unavailable","Use Export PDF instead.",1)}}}};
+function readRep(){const c=UI.rep;if(!$("#pt"))return;Object.assign(c,{ty:$("#pt").value,s:$("#ps").value,e:$("#pe").value,st:$("#pst").value,et:$("#pet").value})}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset.v,b)});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("a[data-a]")){e.preventDefault();e.target.click()}});
+document.addEventListener("change",e=>{const i=e.target.id;
+if(i==="eq"){const q=eqOf(e.target.value);$("#eqd").innerHTML=q?eqCard(q):""}
+if(i==="q"){UI.q=e.target.value;render()}if(i==="rr"){UI.role=e.target.value;render()}if(i==="iq"){UI.iq=e.target.value;UI.lim=5;render()}if(i==="it"){UI.it=e.target.value;UI.lim=5;render()}});
+(async()=>{try{const r=await fetch("/api/state");if(r.ok){const d=await r.json();API=true;if(d.eq&&d.eq.length)S=d;save()}}catch(e){}render()})();
+</script></body></html>
